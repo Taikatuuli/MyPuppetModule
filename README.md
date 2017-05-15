@@ -103,6 +103,9 @@ Notice: Finished catalog run in 7.95 seconds
 
 ## Sources:
 
+### My blog post about this project
+https://venlainkari.wordpress.com/2017/05/15/bulding-a-puppet-module-for-desingers/
+
 ### Installing modules, Puppet documentation:
 https://docs.puppet.com/puppet/latest/modules_installing.html#install-from-the-$$m-the-puppet-forge
 
@@ -117,3 +120,7 @@ http://timjrobinson.com/puppet-how-to-force-apt-get-update/
 
 ### Puppet dependencies and run stages, John Leach:
 http://johnleach.co.uk/words/771/puppet-dependencies-and-run-stages
+
+### Course website, Tero Karvinen
+http://terokarvinen.com/2017/aikataulu-%e2%80%93-linuxin-keskitetty-hallinta-%e2%80%93-ict4tn011-11-%e2%80%93-loppukevat-2017-p2
+
