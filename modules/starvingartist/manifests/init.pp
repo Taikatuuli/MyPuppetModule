@@ -1,33 +1,13 @@
 class starvingartist {
 
 	exec {'apt-get update':
-		command => ["/usr/bin/apt-get update"],
-		refreshonly => "true",
-	}
-	
-	package{'krita':
-		ensure => "latest",	
-		allowcdrom => "true",
-	}
-	
-	package{'inkscape':
-		ensure => "latest",
-		allowcdrom => "true",
-	}	
-
-
-	package{'fontforge':
-		ensure => "latest",
-		allowcdrom = "true",
-	}
-
-	package{'scribus':
-                ensure => "latest",
-                allowcdrom => "true",
+                command  => ["/usr/bin/apt-get update"],
         }
 
-        package{'gimp':
-                ensure => "latest",
+        Exec["apt-get update"] -> Package <| |>
+
+	$packages = [ 'fontforge', 'krita', 'gimp', 'inkscape','scribus']
+        package { $packages:ensure => "latest",
                 allowcdrom => "true",
-	 }
+        }
 }
