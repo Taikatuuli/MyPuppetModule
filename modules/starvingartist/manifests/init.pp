@@ -1,8 +1,8 @@
 class starvingartist {
 
 	exec {'apt-get update':
-		path => ["/usr/bin"],
-		require => Exec ["apt-get update"],
+		command => ["/usr/bin/apt-get update"],
+		refreshonly => "true",
 	}
 	
 	package{'krita':
