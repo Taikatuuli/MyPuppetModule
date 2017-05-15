@@ -23,44 +23,16 @@ Copyright (c) 2000-2012 by George Williams.
  Library based on sources from 14:57 GMT 31-Jul-2012.
 Could not open screen.
 ```
-Fontforge oli siis asentunut, mutta ei suotstu aukeamaan sillä käytän palvelinta PuTTY:n kautta. 
-
-Kokeillaan Kritan asentamista samalla tapaa kuin frontorge:
+I did the same steps with Krita and this was message after I ran the module:
 
 ```
 Notice: Compiled catalog for spiderstorm.eqfgq4capfouriaj4cztiwndne.fx.internal.cloudapp.net in environment production in 0.21 seconds
-Notice: /Stage[main]/Art/Package[krita]/ensure: ensure changed 'purged' to 'latest'
+Notice: /Stage[main]/Starvingartist/Package[krita]/ensure: ensure changed 'purged' to 'latest'
 Notice: Finished catalog run in 84.25 seconds
 ```
-Lisäsin testaten jokaista asennusta uuden package:n.
-Kaikki sujui ja asentu ongelmitta.
-
-Lisäsin modulliin :
-
-``` puppet
- exec {'apt-get update':
-                path => ["/usr/bin"],
-                require => Exec ["apt-get update"],
-        }
-    ```
-Answer: 
-
-```
-Notice: Compiled catalog for spiderstorm.eqfgq4capfouriaj4cztiwndne.fx.internal.cloudapp.net in environment production in 0.23 seconds
-Error: Failed to apply catalog: Found 1 dependency cycle:
-(Exec[apt-get update] => Exec[apt-get update])
-Try the '--graph' option and opening the resulting '.dot' file in OmniGraffle or GraphViz
-``` 
-
-
-At this point my module looked like this: 
+I did these steps with every program and at this point my module looked like this: 
 ``` puppet
 class starvingartist {
-
-	exec {'apt-get update':
-		command => ["/usr/bin/apt-get update"],
-		refreshonly => "true",
-	}
 	
 	package{'krita':
 		ensure => "latest",	
@@ -95,11 +67,8 @@ I made a variable packages and listed the programs in an array, so when I call t
 Now the code looked like this: 
 
 ``` puppet
-class art{
-        exec {'apt-get update':
-                command  => ["/usr/bin/apt-get update"],
-                refreshonly => true,
-        }
+class starvingartist{
+      
         $packages = [ 'fontforge', 'krita', 'gimp', 'inkscape','scribus']
         package { $packages:ensure => "latest",
                 allowcdrom => "true",
@@ -110,7 +79,26 @@ class art{
 
 I tested this new module and it worked and I got that beautiful "Notice: Finished catalog run.." message. 
 
-sudo puppet apply --modulepath /home/Taikatuuli/Puppet/modules/ -e 'class {"art":}'
+Now when everything worked fine I wanted to make sure my repositories are on order before installing any programs.
+I'm not sure is this necessary when using type latest instead of the installed. But did not find straightforward answer for this from google so I did it anyway.
+
+I found many diffrent options for building code that runs the command apt-get update. I ended up using instructions by John Leach. His instructions wore that use exec that that looks for the apt-get update command form usr/bin/ file and another Exec that ensures that no package can be installed before runing apt-get update. 
+
+
+``` puppet
+exec {'apt-get update':
+                command  => ["/usr/bin/apt-get update"],
+        }
+
+        Exec["apt-get update"] -> Package <| |>
+
+```
+I run my module once again and it seemed to work.
+Noitices that I got:
+
+Notice: Compiled catalog for spiderstorm.eqfgq4capfouriaj4cztiwndne.fx.internal.cloudapp.net in environment production in 0.23 seconds
+Notice: /Stage[main]/starvingartist/Exec[apt-get update]/returns: executed successfully
+Notice: Finished catalog run in 7.95 seconds
 
 
 ## Sources:
@@ -121,8 +109,11 @@ https://docs.puppet.com/puppet/latest/modules_installing.html#install-from-the-$
 ### Install multiple packages, Puppet cookbook:
 https://www.puppetcookbook.com/posts/install-multiple-packages.html
 
-### Exec type: Puppet documentation:
+### Exec type, Puppet documentation:
 https://docs.puppet.com/puppet/latest/type.html#exec
 
-### How to force apt-get update: Tim J. Robinson:
+### How to force apt-get update, Tim J. Robinson:
 http://timjrobinson.com/puppet-how-to-force-apt-get-update/
+
+### Puppet dependencies and run stages, John Leach:
+http://johnleach.co.uk/words/771/puppet-dependencies-and-run-stages
