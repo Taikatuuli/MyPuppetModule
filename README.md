@@ -93,13 +93,13 @@ exec {'apt-get update':
         Exec["apt-get update"] -> Package <| |>
 
 ```
-I run my module once again and it seemed to work.
-Noitices that I got:
-
+I ran my module once again and it seemed to work.
+Noitice messages that I got:
+```
 Notice: Compiled catalog for spiderstorm.eqfgq4capfouriaj4cztiwndne.fx.internal.cloudapp.net in environment production in 0.23 seconds
 Notice: /Stage[main]/starvingartist/Exec[apt-get update]/returns: executed successfully
 Notice: Finished catalog run in 7.95 seconds
-
+```
 
 ## Sources:
 
